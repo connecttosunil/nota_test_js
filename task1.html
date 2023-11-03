@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Button Swap</title>
+    <style>
+        .button {
+            width: 80px;
+            height: 30px;
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+<button class="button">1</button>
+<button class="button">2</button>
+<button class="button">3</button>
+
+<script>
+  // Get all the buttons
+  const buttons = document.querySelectorAll('.button');
+
+  // Add click event listener to each button
+  buttons.forEach((button, index) => {
+    button.addEventListener('click', () => {
+      // Check if there is an upper neighbor
+      if (index > 0) {
+        // Swap the button with its upper neighbor
+        button.parentNode.insertBefore(button, button.previousElementSibling);
+      } else {
+        // Swap the button with its below neighbor
+        button.parentNode.insertBefore(button.nextElementSibling, button);
+      }
+    });
+  });
+</script>
+</body>
+</html>

@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>My Table</title>
+    <style>
+        table {
+            border-collapse: collapse;
+        }
+        th, td {
+            border: 1px solid black;
+            padding: 5px;
+        }
+        button {
+            margin-right: 5px;
+        }
+    </style>
+</head>
+<body>
+<div>
+    <button id="addEntryBtn">Add New Data</button>
+</div>
+<br>
+<div id="entryForm" style="display: none;">
+    <input type="text" id="nameInput" placeholder="Name">
+    <button id="sendBtn">Save</button>
+</div>
+<br>
+<table id="dataTable">
+    <thead>
+    <tr>
+        <th>ID</th>
+        <th>Name</th>
+        <th>Date Time</th>
+        <th>Actions</th>
+    </tr>
+    </thead>
+    <tbody id="dataBody">
+    <!-- Data rows will be added dynamically -->
+    </tbody>
+</table>
+
+<script>
+  // Mock data
+  let data = [
+    { id: 1, name: "Sunil Rawat", datetime: "2023-11-03 10:00:00" },
+    { id: 2, name: "Rahul Singh", datetime: "2023-11-04 16:30:00" },
+  ];
+
+  // Function to render the table rows
+  function renderTableRows() {
+    const tableBody = document.getElementById("dataBody");
+    tableBody.innerHTML = "";
+
+    data.forEach(entry => {
+      const row = document.createElement("tr");
+      row.innerHTML = `
+                    <td>${entry.id}</td>
+                    <td>${entry.name}</td>
+                    <td>${entry.datetime}</td>
+                    <td>
+                        <button class="editBtn">Edit</button>
+                        <button class="deleteBtn">Delete</button>
+                    </td>
+                `;
+
+      // Add event listeners to edit and delete buttons
+      const editButton = row.querySelector(".editBtn");
+      const deleteButton = row.querySelector(".deleteBtn");
+
+      editButton.addEventListener("click", () => {
+        editEntry(entry);
+      });
+
+      deleteButton.addEventListener("click", () => {
+        deleteEntry(entry.id);
+      });
+
+      tableBody.appendChild(row);
+    });
+  }
+
+  // Function to show the entry form
+  function showEntryForm() {
+    document.getElementById("entryForm").style.display = "block";
+  }
+
+  // Function to hide the entry form
+  function hideEntryForm() {
+    document.getElementById("entryForm").style.display = "none";
+  }
+
+  // Function to add a new entry
+  function addEntry() {
+    const nameInput = document.getElementById("nameInput");
+    const name = nameInput.value;
+
+    // Mock API request to add the entry
+    const newId = Math.max(...data.map(entry => entry.id)) + 1;
+    const datetime = new Date().toLocaleString();
+
+    data.push({ id: newId, name, datetime });
+    renderTableRows();
+    nameInput.value = "";
+    hideEntryForm();
+  }
+
+  // Function to edit an entry
+  function editEntry(entry) {
+    const nameCell = event.target.parentNode.parentNode.cells[1];
+    const editButton = event.target;
+
+    if (nameCell.isContentEditable) {
+      // Save changes
+      const newName = nameCell.textContent;
+
+      // Mock API request to update the entry
+      entry.name = newName;
+      renderTableRows();
+      editButton.textContent = "Edit";
+      nameCell.contentEditable = false;
+    } else {
+      // Enable editing
+      nameCell.contentEditable = true;
+      editButton.textContent = "Save";
+    }
+  }
+
+  // Function to delete an entry
+  function deleteEntry(id) {
+    // Mock API request to delete the entry
+    data = data.filter(entry => entry.id !== id);
+    renderTableRows();
+  }
+
+  // Add event listener to the "Add New Entry" button
+  const addEntryBtn = document.getElementById("addEntryBtn");
+  addEntryBtn.addEventListener("click", showEntryForm);
+
+  // Add event listener to the "Send" button
+  const sendBtn = document.getElementById("sendBtn");
+  sendBtn.addEventListener("click", addEntry);
+
+  // Render the initial table rows
+  renderTableRows();
+</script>
+</body>
+</html>
